@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>追加審査シート</title>
+<style>
+:root{
+  --bg:#f6f7f7; --card:#ffffff; --ink:#2c2c2c; --sub:#6b7375; --line:#e2e6e7;
+  --teal:#007496; --teal2:#00a4c4; --tint:#e6f3f6; --warn:#a14a00; --warnbg:#fff4e8;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111516; --card:#1a2022; --ink:#e8ecec; --sub:#9aa5a8; --line:#2c3538;
+    --teal:#3fb3d2; --teal2:#5cc6e0; --tint:#16303a; --warn:#f0a35e; --warnbg:#2c2116;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111516; --card:#1a2022; --ink:#e8ecec; --sub:#9aa5a8; --line:#2c3538;
+  --teal:#3fb3d2; --teal2:#5cc6e0; --tint:#16303a; --warn:#f0a35e; --warnbg:#2c2116;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","PingFang SC",sans-serif;font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%}
+.wrap{max-width:640px;margin:0 auto;padding:16px 16px 120px}
+header h1{font-size:19px;margin:8px 0 2px;font-weight:600}
+header p{margin:0;color:var(--sub);font-size:13px}
+.bar{width:36px;height:3px;background:var(--teal);margin:10px 0 14px;border-radius:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--teal2);text-transform:uppercase}
+h2{font-size:18px;margin:2px 0 10px;font-weight:600}
+h3{font-size:15px;margin:18px 0 8px;font-weight:600}
+dl{margin:0;display:grid;grid-template-columns:5.5em 1fr;gap:6px 10px;font-size:14px}
+dt{color:var(--sub)}
+dd{margin:0}
+.note{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px;margin:12px 0 0}
+.quote{border-left:3px solid var(--teal);padding:4px 0 4px 12px;margin:10px 0;font-size:14px}
+a{color:var(--teal)}
+label.name{display:block;font-size:13px;color:var(--sub);margin-bottom:6px}
+select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:96px;resize:vertical}
+details{font-size:14px}
+summary{cursor:pointer;color:var(--teal);font-weight:600}
+details ul{padding-left:18px;margin:8px 0 0}
+details li{margin-bottom:6px}
+
+/* gallery */
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin:0 -2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+.track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:12px;background:#eceeed;scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.track img{flex:none;width:100%;aspect-ratio:1/1;object-fit:contain;scroll-snap-align:center;display:block;background:#eceeed}
+.gmeta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--sub);margin-top:6px}
+.nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;width:36px;height:30px;font-size:16px;line-height:1}
+
+/* scoring */
+.axis{margin:14px 0}
+.axis .t{font-size:14px;font-weight:600}
+.axis .d{font-size:12px;color:var(--sub);margin:2px 0 6px}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.scale button{height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:16px;font-weight:600}
+.scale button[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+.abst{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);margin-top:4px}
+.subtotal{font-size:13px;color:var(--sub);text-align:right;margin-top:4px}
+.subtotal b{color:var(--ink);font-size:16px}
+.disabled{opacity:.35;pointer-events:none}
+
+/* output */
+.out textarea{min-height:200px;font-size:13px;background:var(--tint);border-color:transparent}
+.btn{display:block;width:100%;height:50px;border:0;border-radius:12px;background:var(--teal);color:#fff;font:inherit;font-size:16px;font-weight:600;margin-top:10px}
+.btn.ghost{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+.toast{font-size:13px;color:var(--teal);text-align:center;min-height:1.4em;margin-top:6px}
+.step{display:inline-block;width:20px;height:20px;border-radius:50%;background:var(--teal);color:#fff;font-size:12px;text-align:center;line-height:20px;margin-right:6px}
+footer{font-size:11px;color:var(--sub);text-align:center;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Pick-up Brand / Additional Review</div>
+  <h1>ピックアップブランド 追加審査（3ブランド）</h1>
+  <p>国慶節中にお手数をおかけします。スマホのまま採点し、最後に結果をコピーしてWeChat等でお送りください。</p>
+  <div class="bar"></div>
+</header>
+
+<section class="card">
+  <label class="name" for="who"><span class="step">1</span>お名前</label>
+  <select id="who">
+    <option value="">選択してください</option>
+    <option>飯田</option><option>工藤</option><option>西山</option>
+  </select>
+  <details style="margin-top:14px">
+    <summary>採点の目安（前回と同じ4軸・5段階）</summary>
+    <ul>
+      <li><b>A1 エクイティ適合度</b>　5=このブランド一社で「日本レザーとは何か」を語れる。使い勝手まで考え抜かれた工夫がある／3=製品は合うが世界観や工夫が弱い／1=高品質だが別文脈</li>
+      <li><b>A2 日本文脈の可読性</b>　5=写真だけで日本らしさが伝わり、和柄等の記号に頼らない／3=一行説明があれば伝わる／1=説明しても区別がつかない、または和テイスト過剰</li>
+      <li><b>A3 洗練度・ファッション性</b>　5=今すぐ雑誌特集や代官山・青山のセレクトに置ける。優先ターゲットが手に取れる価格感／3=見せ方次第／1=一部の好きな人向けの域を出ない</li>
+      <li><b>A4 伸びしろ</b>　5=実力一級で認知はこれから、支援で最も跳ねる／3=ある程度知られている／1=既に有名、または実力が伴わない</li>
+    </ul>
+  </details>
+</section>
+
+<!-- Brand 1 -->
+<section class="card" id="b1">
+  <div class="kicker">Brand 1</div>
+  <h2>シアンシューズ（SHIAN SHOES）</h2>
+  <dl>
+    <dt>事業者</dt><dd>シアンシューズ株式会社（東京・葛飾柴又、1957年創業）</dd>
+    <dt>カテゴリ</dt><dd>靴（婦人靴、オーダーメイド、コンフォートスニーカー・スリッポン）</dd>
+    <dt>価格帯</dt><dd>2〜5万円</dd>
+    <dt>素材</dt><dd>国産牛革、国内タンナー（社名は未記載）</dd>
+    <dt>販路</dt><dd>自社EC、全国の百貨店・靴専門店への卸、催事・受注会</dd>
+    <dt>海外</dt><dd>販売実績なし。優先市場は台湾・香港・シンガポール、次に欧米</dd>
+    <dt>希望支援</dt><dd>海外ポップアップ出展</dd>
+  </dl>
+  <h3>特徴（応募フォームより要約）</h3>
+  <p style="margin:0;font-size:14px">大人の女性の足を美しく見せるエレガントな婦人靴を、創業以来つくってきた。20年以上のオーダー靴開発で培った800以上の自社木型と葛飾の職人技で、外反母趾や内反小趾などの悩みがあっても我慢せずに履けるフィット感と屈曲性を両立している。</p>
+  <p style="margin:8px 0 0;font-size:13px"><a href="https://www.shian-shoes.co.jp/" target="_blank" rel="noopener">公式サイト shian-shoes.co.jp</a></p>
+
+  <h3>商品画像（左右にスワイプ）</h3>
+  <div class="gal" data-set="S"></div>
+
+  <div class="score" data-key="b1"></div>
+</section>
+
+<!-- Brand 2 -->
+<section class="card" id="b2">
+  <div class="kicker">Brand 2</div>
+  <h2>紫庵 UKIYOE（SHIAN UKIYOE）</h2>
+  <dl>
+    <dt>事業者</dt><dd>シアンシューズ株式会社の新ライン</dd>
+    <dt>カテゴリ</dt><dd>靴（ウィメンズ スニーカー）</dd>
+    <dt>価格</dt><dd>49,500円（税抜）</dd>
+    <dt>素材</dt><dd>国産牛革（キップ）、染革と高精細プリント</dd>
+    <dt>製造</dt><dd>葛飾の自社職人。製造まで一貫して日本製</dd>
+  </dl>
+  <h3>特徴（応募フォームより要約）</h3>
+  <p style="margin:0;font-size:14px">北斎『神奈川沖浪裏』や歌川国芳の金魚・桜などの浮世絵を、国産牛革に染革と高精細プリントで載せた「履くアート」。シアンシューズの木型による履き心地をそのまま持ち、浮世絵の世界観で海外に打ち出すことを狙った新ライン。</p>
+  <div class="note">情報解禁前の新ラインです。画像・内容の外部共有はお控えください。</div>
+
+  <h3>商品画像（左右にスワイプ）</h3>
+  <div class="gal" data-set="U"></div>
+
+  <div class="score" data-key="b2"></div>
+</section>
+
+<!-- Brand 3 -->
+<section class="card" id="b3">
+  <div class="kicker">Brand 3</div>
+  <h2>MANA（マナ）</h2>
+  <dl>
+    <dt>デザイナー</dt><dd>今西優子（武蔵野美大 日本画専攻、婦人靴メーカー出身）</dd>
+    <dt>開始</dt><dd>2004年春夏コレクション</dd>
+    <dt>カテゴリ</dt><dd>婦人靴が中心（パンプス、ブーツ、スニーカー、サンダル）。ウェア・小物も展開</dd>
+    <dt>価格帯</dt><dd>7,700〜73,700円（公式EC）</dd>
+    <dt>販路</dt><dd>青山直営店（2024年10月開店）、伊勢丹新宿、阪急、自社EC、セレクトショップ</dd>
+  </dl>
+  <h3>推薦者コメント（原文）</h3>
+  <div class="quote">MANA はミラノコレクション歴は10年を超え、世界16ヵ国への輸出実績もあり、海外にもブランドファンは多数おられます。また東京BASE 様を始めセレクトショップとの取引もあり、当方からの提案での先方様店舗でのポップアップイベントの開催が出来る可能性が高く今回の大伸社さんの企画提案をそのまま形にする事ができるブランドだと思います。</div>
+  <div class="note">応募フォームは未提出のため、国産革の使用・製造地・ミラノと輸出実績は未確認です。商品は公式サイトでご覧ください。</div>
+  <p style="margin:12px 0 0"><a href="https://www.mana-l.com/" target="_blank" rel="noopener">公式サイト mana-l.com</a>　／　<a href="https://www.instagram.com/manacraftshoes/" target="_blank" rel="noopener">Instagram</a></p>
+
+  <div class="score" data-key="b3"></div>
+</section>
+
+<!-- Output -->
+<section class="card out">
+  <div><span class="step">2</span><b>結果を送る</b></div>
+  <p style="font-size:13px;color:var(--sub);margin:6px 0 10px">下の「コピー」を押し、WeChatやLINE、メールに貼り付けてお送りください。コピーできない場合は、枠内を長押しして全選択してください。</p>
+  <textarea id="out" readonly></textarea>
+  <button class="btn" id="copy" type="button">結果をコピー</button>
+  <div class="toast" id="toast"></div>
+  <button class="btn ghost" id="reset" type="button">入力をすべて消す</button>
+</section>
+
+<footer>balconia × 大伸社コミュニケーションデザイン　関係者限定</footer>
+</div>
+
+<script>
+(function(){
+  var SETS = {
+    U: [
+      {label:'波・黒', files:['u-12012-nami-bk-01','u-12012-nami-bk-02','u-12012-nami-bk-03','u-12012-nami-bk-04','u-12012-nami-bk-05']},
+      {label:'波・白', files:['u-12012-nami-wh','u-12012-nami-wh-01','u-12012-nami-wh-02','u-12012-nami-wh-03','u-12012-nami-wh-04','u-12012-nami-wh-05']},
+      {label:'金魚・黒', files:['u-02011-kingyo-bk','u-02011-kingyo-bk-01','u-02011-kingyo-bk-02','u-02011-kingyo-bk-03','u-02011-kingyo-bk-04','u-02011-kingyo-bk-05']},
+      {label:'金魚・白', files:['u-02011-kingyo-wh','u-02011-kingyo-wh-01','u-02011-kingyo-wh-02','u-02011-kingyo-wh-03','u-02011-kingyo-wh-04','u-02011-kingyo-wh-05']}
+    ],
+    S: ['02002-bk','12009-bk','12033-bk','13044-bk','2729-bk','42501-bk','e02002','v2e94035','w2e42501','w2e42503'].map(function(c,i){
+      return {label:'型'+(i+1), files:['s-'+c,'s-'+c+'-03']};
+    })
+  };
+  document.querySelectorAll('.gal').forEach(function(root){
+    var sets = SETS[root.dataset.set], cur = 0;
+    root.innerHTML = '<div class="chips"></div><div class="track"></div><div class="gmeta"><span class="cap"></span><span class="nav"><button type="button" data-d="-1" aria-label="前へ">‹</button> <button type="button" data-d="1" aria-label="次へ">›</button></span></div>';
+    var chips = root.querySelector('.chips'), track = root.querySelector('.track'), cap = root.querySelector('.cap');
+    function idx(){ return Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); }
+    function updCap(){ cap.textContent = sets[cur].label + '　' + (idx()+1) + ' / ' + sets[cur].files.length; }
+    function show(i){
+      cur = i;
+      Array.prototype.forEach.call(chips.children, function(c,j){ c.setAttribute('aria-pressed', j===i ? 'true':'false'); });
+      track.innerHTML = '';
+      sets[i].files.forEach(function(f,k){
+        var im = document.createElement('img');
+        im.src = 'img/' + f + '.jpg'; im.alt = sets[i].label + ' ' + (k+1);
+        im.loading = k < 2 ? 'eager' : 'lazy'; im.decoding = 'async';
+        track.appendChild(im);
+      });
+      track.scrollLeft = 0; updCap();
+    }
+    sets.forEach(function(g,i){
+      var b = document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=g.label;
+      b.addEventListener('click', function(){ show(i); }); chips.appendChild(b);
+    });
+    track.addEventListener('scroll', function(){ window.requestAnimationFrame(updCap); }, {passive:true});
+    root.querySelectorAll('.nav button').forEach(function(b){
+      b.addEventListener('click', function(){
+        var n = Math.min(sets[cur].files.length-1, Math.max(0, idx() + Number(b.dataset.d)));
+        track.scrollTo({left:n*track.clientWidth, behavior:'smooth'});
+      });
+    });
+    show(0);
+  });
+
+  var AX = [
+    ['A1','エクイティ適合度','「日本レザーとは何か」を一社で語れるか'],
+    ['A2','日本文脈の可読性','写真だけで日本らしさが伝わるか（記号頼みは減点）'],
+    ['A3','洗練度・ファッション性','セレクトや雑誌にすぐ置けるか、価格感'],
+    ['A4','伸びしろ','支援で最も跳ねるか（既に有名なら低め）']
+  ];
+  var KEY = 'jlia-addreview-v2';
+  var state = load() || {who:'', b1:{s:{},c:'',x:false}, b2:{s:{},c:'',x:false}, b3:{s:{},c:'',x:false}};
+
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+  // scoring UI
+  document.querySelectorAll('.score').forEach(function(box){
+    var k = box.dataset.key, st = state[k];
+    var h = '<h3>採点</h3><label class="abst"><input type="checkbox" class="x"> 利害関係があるため棄権する</label><div class="axes">';
+    AX.forEach(function(a){
+      h += '<div class="axis"><div class="t">'+a[0]+' '+a[1]+'</div><div class="d">'+a[2]+'</div><div class="scale" data-ax="'+a[0]+'">';
+      for (var v=1; v<=5; v++) h += '<button type="button" data-v="'+v+'" aria-pressed="false">'+v+'</button>';
+      h += '</div></div>';
+    });
+    h += '<div class="subtotal">小計 <b class="sum">-</b> / 20</div>';
+    h += '<h3>総評（2〜3行）</h3><textarea class="c" placeholder="評価した点、気になった点など"></textarea></div>';
+    box.innerHTML = h;
+    var axes = box.querySelector('.axes'), x = box.querySelector('.x'), c = box.querySelector('.c');
+    box.querySelectorAll('.scale').forEach(function(sc){
+      var ax = sc.dataset.ax;
+      sc.querySelectorAll('button').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var v = Number(btn.dataset.v);
+          st.s[ax] = (st.s[ax] === v) ? undefined : v;
+          paint(); render();
+        });
+      });
+    });
+    x.addEventListener('change', function(){ st.x = x.checked; paint(); render(); });
+    c.addEventListener('input', function(){ st.c = c.value; render(); });
+    function paint(){
+      box.querySelectorAll('.scale').forEach(function(sc){
+        var v = st.s[sc.dataset.ax];
+        sc.querySelectorAll('button').forEach(function(btn){ btn.setAttribute('aria-pressed', Number(btn.dataset.v)===v ? 'true':'false'); });
+      });
+      var vals = AX.map(function(a){ return st.s[a[0]]; }).filter(function(v){ return v; });
+      box.querySelector('.sum').textContent = vals.length ? vals.reduce(function(p,q){return p+q;},0) : '-';
+      axes.classList.toggle('disabled', !!st.x);
+      x.checked = !!st.x;
+    }
+    c.value = st.c || '';
+    paint();
+  });
+
+  var who = document.getElementById('who');
+  who.value = state.who || '';
+  who.addEventListener('change', function(){ state.who = who.value; render(); });
+
+  function line(k, name){
+    var st = state[k];
+    if (st.x) return '■' + name + '\n棄権\n';
+    var parts = AX.map(function(a){ return a[0] + ':' + (st.s[a[0]] || '未'); });
+    var vals = AX.map(function(a){ return st.s[a[0]]; }).filter(function(v){ return v; });
+    var sum = vals.reduce(function(p,q){return p+q;},0);
+    return '■' + name + '\n' + parts.join(' ') + '（小計' + (vals.length===4 ? sum : sum + '・未入力あり') + '/20）\n総評: ' + (st.c.trim() || '（未記入）') + '\n';
+  }
+  function render(){
+    document.getElementById('out').value =
+      '【ピックアップ追加審査】採点者: ' + (state.who || '（未選択）') + '\n\n' +
+      line('b1','シアンシューズ') + '\n' + line('b2','紫庵 UKIYOE') + '\n' + line('b3','MANA');
+    save();
+  }
+  render();
+
+  var toast = document.getElementById('toast');
+  document.getElementById('copy').addEventListener('click', function(){
+    var t = document.getElementById('out');
+    var msg = !state.who ? 'お名前が未選択です。コピーはしました。' : 'コピーしました。WeChat等に貼り付けてください。';
+    function fallback(){
+      t.removeAttribute('readonly'); t.focus(); t.select(); t.setSelectionRange(0, 99999);
+      var ok = false; try{ ok = document.execCommand('copy'); }catch(e){}
+      t.setAttribute('readonly','');
+      toast.textContent = ok ? msg : '自動コピーできませんでした。枠内を長押しして全選択→コピーしてください。';
+    }
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(t.value).then(function(){ toast.textContent = msg; }, fallback);
+    } else fallback();
+  });
+  document.getElementById('reset').addEventListener('click', function(){
+    if (!confirm('入力内容をすべて消しますか？')) return;
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>
